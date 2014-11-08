@@ -16,7 +16,7 @@ b64_inner:
         rol eax, 8
         cmp al, '0'
         jnb b64_testupr
-	shr al, 2
+	shr al, 2 ;because '+' and '/' differ by only 1 bit
         add al, '0' ;concatenate numbers and '+' and '/'
 
 b64_testupr:
