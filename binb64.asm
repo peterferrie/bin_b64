@@ -2,7 +2,7 @@ bits 32
 
 ;No GetPC(), requires ESI=EIP
 
-b64decode:
+_b64decode:
         add esi, b64decode_end - _b64decode
         push esi
         pop edi
@@ -15,20 +15,22 @@ b64_outer:
 b64_inner:
         rol eax, 8
         cmp al, '0'
-        jnb b64_testchar
-        add al, (('/' << 2) + 1) & 0ffh
-        shr al, 2 ;because '+' and '/' differ by only 1 bit
+        jnb b64_testupr
+	shr al, 2
+        add al, '0' ;concatenate numbers and '+' and '/'
 
-b64_testchar:
-        add al, 4
-        cmp al, 3fh
-        jbe b64_store
-        sub al, 45h
-        cmp al, 19h
-        jbe b64_store
-        sub al, 6
+b64_testupr:
+        cmp al, 'A'
+        jnb b64_testlwr
+        add al, ('z' + 1) - '0' ;concatenate lowercase and numbers
+
+b64_testlwr:
+        cmp al, 'a'
+        jb b64_store
+        sub al, 'a' - ('Z' + 1) ;concatenate uppercase and lowercase
 
 b64_store:
+        sub al, 'A'
         shrd ebx, eax, 6
         loop b64_inner
         xchg ebx, eax
