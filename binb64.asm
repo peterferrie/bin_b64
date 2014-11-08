@@ -33,8 +33,8 @@ b64_store:
         sub al, 'A'
         shrd ebx, eax, 6
         loop b64_inner
+        bswap ebx
         xchg ebx, eax
-        bswap eax
         stosd
         cmp byte [esi], '+'
         dec edi
